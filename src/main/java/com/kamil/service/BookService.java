@@ -22,5 +22,10 @@ public class BookService {
 		return bRepo.findAll();
 	}
 	
+	public Book getBookById(int id) {
+		return bRepo.findById(id).get();
+		
+	}
+	
 
 }

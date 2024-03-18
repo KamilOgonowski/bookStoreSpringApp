@@ -4,17 +4,23 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kamil.entity.Book;
+import com.kamil.entity.MyBookList;
 import com.kamil.service.BookService;
+import com.kamil.service.MyBookListService;
 
 @Controller
 public class BookController {
 	
 	@Autowired
 	private BookService service;
+	
+	@Autowired
+	private MyBookListService myBookService;
 	
 	@GetMapping("/")
 	public String home() {
@@ -34,7 +40,7 @@ public class BookController {
 //		m.setViewName("bookList");
 //		m.addObject("book", list);
 		return new ModelAndView("bookList", "book",list);
-							//  ViewPage
+							//  ViewPage	name 	obj
 		
 	}
 	
@@ -43,6 +49,33 @@ public class BookController {
 			service.save(b);
 			return "redirect:/available_books";
 		}
+	
+	
+//	@GetMapping("/my_books")
+//		public String getMyBooks() {
+//			return "myBooks";
+//		}
+	
+	
+
+	@GetMapping("/my_books")
+		public String getMyBooks(Model model) {
+			List<MyBookList> list = myBookService.getAllMyBooks();
+			model.addAttribute("book", list);
+			return "myBooks";
+		}
+	
+	@RequestMapping("/mylist/{id}")
+	public String getMyList(@PathVariable("id") int id) {
+		Book b = service.getBookById(id);
+		MyBookList mb = new MyBookList(b.getId(), b.getName(), b.getAuthor(), b.getPrice());
+		myBookService.saveMyBook(mb);
+		return "redirect:/my_books";
+	}
+	
+	
+//	
+	
 	
 
 }
